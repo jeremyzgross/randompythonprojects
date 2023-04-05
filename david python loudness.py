@@ -32,32 +32,32 @@ def measure_loudness():
 
 #for loop that measures loudness.  Replace the directory with where the converted video to audio file are placed
     badCounter = 0
-    for filename in os.listdir(BASE_PATH+'/EXPORTED MP3s'):
+    for filename in os.listdir(f'/Users/jeremyzgross/Downloads/BLACKSPOT QC/EXPORTED MP3s'):
         if not filename.endswith(".mp3"): #specifies that it is looking for mp3 files
             continue
         data, rate = sf.read(f'/Users/jeremyzgross/Downloads/BLACKSPOT QC/EXPORTED MP3s/{filename}')  # load audio (with shape (samples, channels)). Replace the directory in the () to where your audio files are located bewtween f and {filename}. Make sure there is a / at the end of your directory
         meter = pyln.Meter(rate)  # create BS.1770 meter
         loudness = meter.integrated_loudness(data)  # measure loudness
-        sourceMp4Path = '/Users/jeremyzgross/Downloads/BLACKSPOT QC/TEST VIDEOS/'+filename+'.mp4'
+        sourceMp4Path = '/Users/jeremyzgross/Downloads/BLACKSPOT QC/TEST VIDEOS/'+os.path.splitext(filename)[0]+'.mp4'
         if loudness <= -22 and loudness >= -26:
             # move mp4 to a folder GOOD
-            shutil.move(sourceMp4Path, BASE_PATH+'/GOOD VIDEOS')
+            shutil.move(sourceMp4Path, f'/Users/jeremyzgross/Downloads/BLACKSPOT QC/GOOD VIDEOS')
         else:
             badCounter += 1
             # move mp4 to a folder BAD
-            shutil.move(sourceMp4Path, BASE_PATH+'/BAD VIDEOS')
+            shutil.move(sourceMp4Path, f'/Users/jeremyzgross/Downloads/BLACKSPOT QC//BAD VIDEOS')
         # print(filename)
         # print('loudness')
         # print(loudness)
-    print(badCounter+" BAD FILES")
+    print(str(badCounter)+" BAD FILES")
 
 # clears files in MP3 folder
-    mp3Folder = BASE_PATH+'/EXPORTED MP3s'
+    mp3Folder = f'/Users/jeremyzgross/Downloads/BLACKSPOT QC/EXPORTED MP3s'
     for filename in os.listdir(mp3Folder):
         file_path = os.path.join(mp3Folder, filename)
         try:
             # if the filename is a file, delete it
-            if os.path.isfile(file_path) or os.path.islink(file_path):
+            if filename.endswith(".mp3"):
                 os.unlink(file_path)
             # # if the filename is a dir, delete the dir
             # elif os.path.isdir(file_path):
@@ -69,13 +69,3 @@ def measure_loudness():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     measure_loudness()
-
-
-
-
-# loop through files
-# if outside of thresh, move mp4 to a folder TOO_LOUD, else move to GOOD_VOLUME
-# print out number of files that are too loud
-# either way, delete mp3s
-
-
